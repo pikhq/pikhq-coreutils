@@ -1,8 +1,8 @@
 CFLAGS += -std=c99
 CPPFLAGS += -Iinclude
 
-all: cksum/cksum
+all: cat/cat cksum/cksum
 
 clean:
-	rm -f cksum/cksum
+	rm -f cat/cat cksum/cksum
 
