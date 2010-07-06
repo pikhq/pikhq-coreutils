@@ -119,11 +119,17 @@ static void print_single(const int month, const int year)
 		printf("\n");
 	} while(cont);
 }
+
+#define cal_header(x)						\
+	output_centered(months[i+x], strlen(months[i+x]), 20);	\
+	printf(x != 2 ? "   " : "\n");				\
+
 		
 #define init_cal(x)						\
 	ccrContext cont ## x = 0;				\
 	print_cal(&cont ## x, i + x, year);			\
 	printf(x != 2 ? "   " : "\n");
+
 
 #define put_cal(x)							\
 	{								\
@@ -145,14 +151,8 @@ static void print_year(const int year)
 	output_centered(title, title_length, 66); // 66 = width of 3 calendars
 	printf("\n");
 	for(int i = 0; i < 11; i += 3) {
-		for(int j = 0; j < 3; j++) {
-			if(j != 0)
-				printf("   ");
-			output_centered(months[i+j], strlen(months[i+j]), 20);
-			if(j == 2)
-				printf("\n");
-		}
-		init_cal(0);  init_cal(1);  init_cal(2);
+		cal_header(0); cal_header(1); cal_header(2);
+		init_cal(0);   init_cal(1);   init_cal(2);
 		while(cont0 || cont1 || cont2) {
 			put_cal(0);  put_cal(1);  put_cal(2);
 		}
