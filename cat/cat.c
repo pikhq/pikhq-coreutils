@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <getopt.h>
 
 static void do_cat(FILE *f)
 {
@@ -26,16 +27,19 @@ static void do_cat(FILE *f)
 
 int main(int argc, char **argv)
 {
-	if(argc <= 1)
+	int arg;
+
+	/* POSIX requires that "-u" copy bytes directly from file to stdout.
+	 * As this is our normal behavior, we can just ignore this flag.
+	 */
+	while((arg = getopt(argc, argv, "u")) != -1)
+	      if(arg == '?') // Unrecognised. Getopt already did an error mesage.
+		      return 1;
+
+	if(argc == optind)
 		do_cat(stdin);
 	else {
-		/* POSIX requires that -u write directly from file to
-		 * stdout *immediately*, no delay.
-		 * As this is our normal behavior, we should instead
-		 * ignore the flag.
-		 */
-		int initial_start = strcmp("-u", argv[1]) ? 1 : 2;
-		for(int i = initial_start; i < argc; i++)
+		for(int i = optind; i < argc; i++)
 			if(!strcmp("-", argv[i]))
 				do_cat(stdin);
 			else {
