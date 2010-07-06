@@ -24,64 +24,64 @@ static void remove_trailing(char *string, const size_t string_len);
 
 static void basename(char *string, const char *suffix)
 {
-  size_t string_len = strlen(string);
-
-  if(!strcmp("", string)) {
-    printf(".\n");
-    return;
-  }
-
-  if(all_slashes(string, string_len)) {
-    printf("/\n");
-    return;
-  }
-
-  remove_trailing(string, string_len);
-  string = remove_leading(string);
-  remove_suffix(string, suffix);
-  printf("%s\n", string);
+	size_t string_len = strlen(string);
+	
+	if(!strcmp("", string)) {
+		printf(".\n");
+		return;
+	}
+	
+	if(all_slashes(string, string_len)) {
+		printf("/\n");
+		return;
+	}
+	
+	remove_trailing(string, string_len);
+	string = remove_leading(string);
+	remove_suffix(string, suffix);
+	printf("%s\n", string);
 }
 
 static int all_slashes(const char *string, const size_t string_len)
 {
-  for(int i = 0; i != string_len; i++)
-    if(string[i] != '/')
-      return 0;
-  return 1;
+	for(int i = 0; i != string_len; i++)
+		if(string[i] != '/')
+			return 0;
+	return 1;
 }
 
 static char *remove_leading(char *string)
 {
-  char *tmp = NULL;
-  while((tmp = strchr(string, '/')) != NULL)
-    string = tmp + 1;
-  return string;
+	char *tmp = NULL;
+	while((tmp = strchr(string, '/')) != NULL)
+		string = tmp + 1;
+	return string;
 }
 
 static void remove_trailing(char *string, const size_t string_len)
 {
-  for(int i = string_len - 1; i != 0 && string[i] == '/'; i--)
-    string[i] = 0;
+	for(int i = string_len - 1; i != 0 && string[i] == '/'; i--)
+		string[i] = 0;
 }
 
 static void remove_suffix(char *string, const char *suffix)
 {
-  if(strcmp(string, suffix)) {
-    char *suffix_end = strchr(suffix, 0);
-    char *string_end = strchr(string, 0);
-    while(suffix_end != suffix && string_end != string && *string_end-- == *suffix_end--);
-    if(suffix_end == suffix)
-      *string_end = 0;
-  }
+	if(strcmp(string, suffix)) {
+		char *suffix_end = strchr(suffix, 0);
+		char *string_end = strchr(string, 0);
+		while(suffix_end != suffix && string_end != string && *string_end-- == *suffix_end--);
+		if(suffix_end == suffix)
+			*string_end = 0;
+	}
 }
 
 int main(int argc, char **argv)
 {
-  if(argc <= 1) {
-    fprintf(stderr, "%s: Too few arguments.\n", argv[0]);
-    return 1;
-  } else if(argc == 2)
-    basename(argv[1], "");
-  else
-    basename(argv[1], argv[2]);
+	if(argc <= 1) {
+		fprintf(stderr, "%s: Too few arguments.\n", argv[0]);
+		return 1;
+	} else if(argc == 2)
+		basename(argv[1], "");
+	else
+		basename(argv[1], argv[2]);
 }
