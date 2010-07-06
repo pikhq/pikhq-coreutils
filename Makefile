@@ -1,8 +1,11 @@
 CFLAGS += -std=c99
 CPPFLAGS += -Iinclude
 
-all: cat/cat cksum/cksum
+PROGS = cat/cat cksum/cksum
+
+.PHONY: all clean
+
+all: ${PROGS}
 
 clean:
-	rm -f cat/cat cksum/cksum
-
+	rm -f ${PROGS}
