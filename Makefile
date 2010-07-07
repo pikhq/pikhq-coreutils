@@ -1,4 +1,4 @@
-CFLAGS += -std=c99
+CFLAGS += -std=gnu99
 CPPFLAGS += -Iinclude
 
 PROGS = base64/base64 basename/basename cal/cal cat/cat cksum/cksum
