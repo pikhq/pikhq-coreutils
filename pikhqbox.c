@@ -1,3 +1,7 @@
+static int base64_main(int argc, char **argv);
+#define main base64_main
+#include "base64/base64.c"
+#undef main
 static int basename_main(int argc, char **argv);
 #define main basename_main
 #include "basename/basename.c"
@@ -18,6 +22,8 @@ static int cksum_main(int argc, char **argv);
 int main(int argc, char **argv)
 {
  start:
+  if(!strcmp(argv[0], "base64"))
+    return base64_main(argc, argv);
   if(!strcmp(argv[0], "basename"))
     return basename_main(argc, argv);
   if(!strcmp(argv[0], "cal"))
