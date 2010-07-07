@@ -13,8 +13,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _POSIX_SOURCE
-
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
