@@ -36,11 +36,7 @@ static void encode_chars(char s[3], size_t len)
 
 static void decode_chars(char s[4])
 {
-  int num_to_output =
-    s[0] == '=' ? 0 :
-    s[1] == '=' ? 1 :
-    s[2] == '=' ? 2 :
-    3;
+  int num_to_output = (int)(strchr(s, '=') - s);
 
   for(int i = 0; i != 4; i++)
     s[i] = s[i] != '=' ? b64dec[s[i]] - '!' : 0;
