@@ -21,8 +21,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include "coroutine.h"
-
 static const char *weekdays[] = {
 	"Sunday", "Monday", "Tuesday",
 	"Wednesday", "Thursday", "Friday",
@@ -70,79 +68,42 @@ static void output_centered(const char *s, const size_t s_len, const int num_col
 	repeat_print(" ", (num_columns - s_len)/2 + (num_columns - s_len)%2);
 }
 
-#define col_check {				\
-		if(cont->cur_col == 7) {	\
-			cont->cur_col = 0;	\
-			ccrReturnV;		\
-		}				\
-		cont->cur_col++;		\
-	}
-
-static void print_cal(ccrContParam, const int month, const int year)
+static int print_cal(const int line, const int month, const int year)
 {
-	ccrBeginContext;
-	int i;
-	int start;
-	int cur_col;
-	ccrEndContext(cont);
-	
-	ccrBegin(cont);
-	
-	printf("Su Mo Tu We Th Fr Sa");
-	ccrReturnV;
-	
-	cont->start = starting_day(month, year);
-	cont->cur_col = cont->start;
-	repeat_print("   ", cont->start);
-
-	for(cont->i = 1; cont->i <= lengths_of_month[month]; cont->i++) {
-		col_check;
-		printf("%2i ", cont->i);
-	}
-	if(is_leap(year) && month == 1) {
-		col_check;
-		printf("29 ");
-	}
-	repeat_print("   ", 7 - cont->cur_col);
-	ccrFinishV;
+  int start = starting_day(month, year);
+  int cur_col = 0;
+  if(line == 0) {
+    printf("Su Mo Tu We Th Fr Sa ");
+    return 1;
+  }
+  int i;
+  for(i = (line-1)*7 - start + 1; i <= lengths_of_month[month]; i++) {
+    if(cur_col++ == 7)
+      return 1;
+    if(i <= 0)
+      printf("   ");
+    else
+      printf("%2i ", i);
+  }
+  if(month == 1 && i == 29 && is_leap(year)) {
+    if(cur_col++ == 7)
+      return 1;
+    printf("29 ");
+  }
+  repeat_print("   ", 7 - cur_col);
+  return 0;
 }
 
 static void print_single(const int month, const int year)
 {
-	ccrContext cont = 0;
 	char title[21]; // Width of a single calendar
 	int title_length = snprintf(title, 20, "%s %i", months[month], year);
 	output_centered(title, title_length, 20);
 	printf("\n");
-	do {
-		print_cal(&cont, month, year);
-		printf("\n");
-	} while(cont);
+	int line = 0;
+	while(print_cal(line++, month, year))
+	  printf("\n");
 }
-
-#define cal_header(x)						\
-	output_centered(months[i+x], strlen(months[i+x]), 20);	\
-	printf(x != 2 ? "   " : "\n");				\
-
-		
-#define init_cal(x)						\
-	ccrContext cont ## x = 0;				\
-	print_cal(&cont ## x, i + x, year);			\
-	printf(x != 2 ? "   " : "\n");
-
-
-#define put_cal(x)							\
-	{								\
-		if(cont ## x)						\
-			print_cal(&cont ## x, i + x, year);		\
-		else if(!cont ## x)					\
-			if(x != 2)					\
-				repeat_print(" ", 21);			\
-		if(x == 2)						\
-			printf("\n");					\
-		else							\
-			printf("  ");					\
-	}
 
 static void print_year(const int year)
 {
@@ -151,10 +112,15 @@ static void print_year(const int year)
 	output_centered(title, title_length, 66); // 66 = width of 3 calendars
 	printf("\n");
 	for(int i = 0; i < 11; i += 3) {
-		cal_header(0); cal_header(1); cal_header(2);
-		init_cal(0);   init_cal(1);   init_cal(2);
-		while(cont0 || cont1 || cont2) {
-			put_cal(0);  put_cal(1);  put_cal(2);
+		output_centered(months[i],   strlen(months[i]),   20); printf("   ");
+		output_centered(months[i+1], strlen(months[i+1]), 20); printf("   ");
+		output_centered(months[i+2], strlen(months[i+2]), 20); printf("\n");
+		int line = 0;
+		int cal1 = 1, cal2 = 1, cal3 = 1;
+		while(cal1 || cal2 || cal3) {
+			cal1 = print_cal(line, i, year);     printf("  ");
+			cal2 = print_cal(line, i+1, year);   printf("  ");
+			cal3 = print_cal(line++, i+2, year); printf("\n");
 		}
 	}
 }

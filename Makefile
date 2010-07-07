@@ -8,7 +8,9 @@ PIKHQBOX_SOURCES = basename/basename.c cal/cal.c cat/cat.c cksum/cksum.c
 
 all: ${PROGS}
 
-pikhqbox.c: ${PIKHQBOX_SOURCES}
+pikhqbox: pikhqbox.o
+
+pikhqbox.o: ${PIKHQBOX_SOURCES}
 
 clean:
-	rm -f ${PROGS} pikhqbox
+	rm -f ${PROGS} pikhqbox pikhqbox.o
