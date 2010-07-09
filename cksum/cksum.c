@@ -99,8 +99,7 @@ int main(int argc, char **argv)
 		crc(stdin);
 		printf("%u %zu\n", sum, len);
 	} else {
-		FILE *f;
-		f = fopen(argv[1], "r");
+		FILE *f = fopen(argv[1], "r");
 		if(!f || errno) {
 			perror(argv[0]);
 			return 1;
