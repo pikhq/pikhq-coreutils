@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 	 * As this is our normal behavior, we can just ignore this flag.
 	 */
 	while((arg = getopt(argc, argv, "u")) != -1)
-	      if(arg == '?') // Unrecognised. Getopt already did an error mesage.
+	      if(arg == '?') // Unrecognised. Getopt already did an error message.
 		      return 1;
 
 	if(argc == optind)
